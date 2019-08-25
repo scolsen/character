@@ -1,0 +1,6 @@
+(load "character.carp")
+(defproject "title" "Character"
+            "docs-directory" "doc"
+            "search-path" "src")
+(save-docs Character)
+(quit)
