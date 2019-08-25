@@ -1,7 +1,3 @@
-(defproject "title" "Character"
-            "docs-directory" "doc"
-            "search-path" "src")
-
 (defmodule Character
   (doc Character "The Character datatype abstracts over Carps' base
   implementation of characters, the Char data type. It is little more than a
