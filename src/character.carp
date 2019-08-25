@@ -1,0 +1,94 @@
+(defproject "title" "Character"
+            "docs-directory" "doc"
+            "search-path" "src")
+
+(defmodule Character
+  (doc Character "The Character datatype abstracts over Carps' base
+  implementation of characters, the Char data type. It is little more than a
+  mapping between the Char type and sumtype members, which yields a restricted
+  set over the type. The Invalid type member is returned when there's no other
+  appropriate mapping.")
+  (deftype Character
+    A B C
+    D E F
+    G H I
+    J K L
+    M N O
+    P Q R
+    S T U
+    V W X
+    Y Z
+    Invalid)
+
+  (use Character)
+
+  (sig from-char (Fn [Char] Character))
+  (doc from-char 
+    "Converts a Char value to a Character.  If the provided character does not
+    have a valid Character value, Character.Invalid is returned.")
+  (defn from-char [c] 
+    (cond 
+      (= \a c) (A) (= \b c) (B) (= \c c) (C)
+      (= \d c) (D) (= \e c) (E) (= \f c) (F)
+      (= \g c) (G) (= \h c) (H) (= \i c) (I)
+      (= \j c) (J) (= \k c) (K) (= \l c) (L)
+      (= \m c) (M) (= \n c) (N) (= \o c) (O)
+      (= \p c) (P) (= \q c) (Q) (= \r c) (R)
+      (= \s c) (S) (= \t c) (T) (= \u c) (U)
+      (= \v c) (V) (= \w c) (W) (= \x c) (X)
+      (= \y c) (Y) (= \z c) (Z)
+      (Invalid)))
+
+  (sig lower (Fn [Character] String))
+  (doc lower "Returns the lowercase value of a given Character as a string.")
+  (defn lower [c] 
+    (match (the Character c)
+      (A) @"a" (B) @"b" (C) @"c"
+      (D) @"d" (E) @"e" (F) @"f"
+      (G) @"g" (H) @"h" (I) @"i"
+      (J) @"j" (K) @"k" (L) @"l"
+      (M) @"m" (N) @"n" (O) @"o"
+      (P) @"p" (Q) @"q" (R) @"r"
+      (S) @"s" (T) @"t" (U) @"u" 
+      (V) @"v" (W) @"w" (X) @"x" 
+      (Y) @"y" (Z) @"z"
+      _ @""))
+
+  (sig upper (Fn [Character] String))
+  (doc upper "Returns the uppercase value of a given Character as a string.")
+  (defn upper [c] 
+    (match (the Character c)
+      (A) @"A" (B) @"B" (C) @"C"
+      (D) @"D" (E) @"E" (F) @"F"
+      (G) @"G" (H) @"H" (I) @"I"
+      (J) @"J" (K) @"K" (L) @"L"
+      (M) @"M" (N) @"N" (O) @"O"
+      (P) @"P" (Q) @"Q" (R) @"R"
+      (S) @"S" (T) @"T" (U) @"U" 
+      (V) @"V" (W) @"W" (X) @"X" 
+      (Y) @"Y" (Z) @"Z"
+      _ @""))
+
+  (sig to-char (Fn [Character] Char))
+  (doc to-char 
+    "Returns the Char representation of a given Character.  If there's no
+    matching representation, returns (Char.from-int 0)")
+  (defn to-char [c]
+    (match (the Character c)
+      (A) \A (B) \B (C) \C
+      (D) \D (E) \E (F) \F
+      (G) \G (H) \H (I) \I
+      (J) \J (K) \K (L) \L
+      (M) \M (N) \N (O) \O
+      (P) \P (Q) \Q (R) \R
+      (S) \S (T) \T (U) \U 
+      (V) \V (W) \W (X) \X 
+      (Y) \Y (Z) \Z
+      _ (Char.from-int 0)))
+
+  (defn /= [c other-c] 
+    (/= (to-char c) (to-char other-c)))
+  
+  (defn str [c]
+    (str (to-char c)))
+)

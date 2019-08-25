@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <link rel="stylesheet" href="carp_style.css">
+    </head>
+    <body>
+        <div class="content">
+            <div class="logo">
+                <a href="http://github.com/carp-lang/Carp">
+                    <img src="logo.png">
+                </a>
+                <div class="title">
+                    Character
+                </div>
+                <div class="index">
+                    <ul>
+                        <li>
+                            <a href="Character.html">
+                                Character
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <h1>
+                Character
+            </h1>
+            <div class="module-description">
+                
+            </div>
+            <div class="binder">
+                <a class="anchor" href="#/=">
+                    <h3 id="/=">
+                        /=
+                    </h3>
+                </a>
+                <div class="description">
+                    defn
+                </div>
+                <p class="sig">
+                    (λ [Character, Character] Bool)
+                </p>
+                <pre class="args">
+                    (/= c other-c)
+                </pre>
+                <p class="doc">
+                    
+                </p>
+            </div>
+            <div class="binder">
+                <a class="anchor" href="#Character">
+                    <h3 id="Character">
+                        Character
+                    </h3>
+                </a>
+                <div class="description">
+                    module
+                </div>
+                <p class="sig">
+                    Module
+                </p>
+                <span>
+                    
+                </span>
+                <p class="doc">
+                    <p>The Character datatype abstracts over Carps' base
+implementation of characters, the Char data type. It is little more than a
+mapping between the Char type and sumtype members, which yields a restricted
+set over the type. The Invalid type member is returned when there's no other
+appropriate mapping.</p>
+
+                </p>
+            </div>
+            <div class="binder">
+                <a class="anchor" href="#from-char">
+                    <h3 id="from-char">
+                        from-char
+                    </h3>
+                </a>
+                <div class="description">
+                    defn
+                </div>
+                <p class="sig">
+                    (λ [Char] Character)
+                </p>
+                <pre class="args">
+                    (from-char c)
+                </pre>
+                <p class="doc">
+                    <p>Converts a Char value to a Character.  If the provided character does not
+have a valid Character value, Character.Invalid is returned.</p>
+
+                </p>
+            </div>
+            <div class="binder">
+                <a class="anchor" href="#lower">
+                    <h3 id="lower">
+                        lower
+                    </h3>
+                </a>
+                <div class="description">
+                    defn
+                </div>
+                <p class="sig">
+                    (λ [Character] String)
+                </p>
+                <pre class="args">
+                    (lower c)
+                </pre>
+                <p class="doc">
+                    <p>Returns the lowercase value of a given Character as a string.</p>
+
+                </p>
+            </div>
+            <div class="binder">
+                <a class="anchor" href="#str">
+                    <h3 id="str">
+                        str
+                    </h3>
+                </a>
+                <div class="description">
+                    defn
+                </div>
+                <p class="sig">
+                    (λ [Character] String)
+                </p>
+                <pre class="args">
+                    (str c)
+                </pre>
+                <p class="doc">
+                    
+                </p>
+            </div>
+            <div class="binder">
+                <a class="anchor" href="#to-char">
+                    <h3 id="to-char">
+                        to-char
+                    </h3>
+                </a>
+                <div class="description">
+                    defn
+                </div>
+                <p class="sig">
+                    (λ [Character] Char)
+                </p>
+                <pre class="args">
+                    (to-char c)
+                </pre>
+                <p class="doc">
+                    <p>Returns the Char representation of a given Character.  If there's no
+matching representation, returns (Char.from-int 0)</p>
+
+                </p>
+            </div>
+            <div class="binder">
+                <a class="anchor" href="#upper">
+                    <h3 id="upper">
+                        upper
+                    </h3>
+                </a>
+                <div class="description">
+                    defn
+                </div>
+                <p class="sig">
+                    (λ [Character] String)
+                </p>
+                <pre class="args">
+                    (upper c)
+                </pre>
+                <p class="doc">
+                    <p>Returns the uppercase value of a given Character as a string.</p>
+
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

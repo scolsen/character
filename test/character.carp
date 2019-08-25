@@ -1,0 +1,58 @@
+(load "../src/character.carp")
+(load "Test.carp")
+
+(use Character.Character)
+(use Array)
+(use Test)
+
+(def characters [(A) (B) (C) (D) (E) (F) (G) (H) (I) (J) (K) (L) (M) (N) (O) (P)
+                (Q) (R) (S) (T) (U) (V) (W) (X) (Y) (Z)])
+(def chars [\a \b \c \d \e \f \g \h \i \j \k \l \m \n \o \p \q
+            \r \s \t \u \v \w \x \y \z])
+(def CHARS [\A \B \C \D \E \F \G \H \I \J \K \L \M \N \O \P \Q
+            \R \S \T \U \V \W \X \Y \Z])
+(def lowers [@"a" @"b" @"c" @"d" @"e" @"f" @"g" @"h" @"i" @"j" @"k" @"l" @"m"
+             @"n" @"o" @"p" @"q" @"r" @"s" @"t" @"u" @"v" @"w" @"x" @"y" @"z"])
+(def uppers [@"A" @"B" @"C" @"D" @"E" @"F" @"G" @"H" @"I" @"J" @"K" @"L" @"M"
+             @"N" @"O" @"P" @"Q" @"R" @"S" @"T" @"U" @"V" @"W" @"X" @"Y" @"Z"])
+
+;; Wrapper function to pass from-char to copy-map.
+(defn from-char [ch-ref] 
+  (Character.from-char @(the (Ref Char) ch-ref)))
+
+;; Wrapper function to pass to-char to copy-map.
+(defn to-char [c-ref] 
+  (Character.to-char @(the (Ref Character) c-ref)))
+
+;; Wrapper function to pass lower to copy-map.
+(defn lower [c-ref]
+  (Character.lower @(the (Ref Character) c-ref)))
+
+;; Wrapper function to pass upper to copy-map.
+(defn upper [c-ref]
+  (Character.upper @(the (Ref Character) c-ref)))
+
+;; TODO: Fix the following test definition.
+;; At the moment there seems to be an issue with the test macro--likely the
+;; implementation of str is missing for a type.
+(deftest test
+  (assert-equal test 
+                &characters
+                &(copy-map &from-char &chars) 
+                "from-char works as expected"))
+
+;; Tests
+(defn test-from-char [] 
+  (= &characters &(copy-map &from-char &chars)))
+
+(defn test-to-char []
+  (= &CHARS &(copy-map &to-char &characters)))
+
+(defn test-lower [] 
+  (= &lowers &(copy-map &lower &characters)))
+
+(defn test-upper []
+  (= &uppers &(copy-map &upper &characters)))
+
+(defn test-all []
+  (and* (test-from-char) (test-to-char) (test-lower) (test-upper)))
