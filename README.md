@@ -27,7 +27,7 @@ with characters, such as `lower` and `upper`.
 ```clojure 
 (defn check-roman [char]
   (match (Character.from-char char)
-    (Invalid) flase
+    (Invalid) false
     _ true))
 ```
 
