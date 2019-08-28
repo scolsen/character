@@ -1,90 +1,162 @@
+(use Maybe)
+
+;; Our functions, e.g. `to-char` return a `(Ref Char)`. Carp doesn't have a
+;; `str` function to handle this in its core library, so we add one here.
+(defn str [ch] (str @ch))
+
+(deftype (Ch a)
+    (Character [a])
+    (Invalid []))
+
 (defmodule Character
-  (doc Character "The Character datatype abstracts over Carps' base
-  implementation of characters, the Char data type. It is little more than a
-  mapping between the Char type and sumtype members, which yields a restricted
-  set over the type. The Invalid type member is returned when there's no other
-  appropriate mapping.")
-  (deftype Character
-    A B C
-    D E F
-    G H I
-    J K L
-    M N O
-    P Q R
-    S T U
-    V W X
-    Y Z
-    Invalid)
+  (definterface char (Fn [a] Char))
+  (definterface character (Fn [Char] (Maybe a)))
 
-  (use Character)
-
-  (sig from-char (Fn [Char] Character))
-  (doc from-char 
-    "Converts a Char value to a Character.  If the provided character does not
-    have a valid Character value, Character.Invalid is returned.")
-  (defn from-char [c] 
-    (cond 
-      (= \a c) (A) (= \b c) (B) (= \c c) (C)
-      (= \d c) (D) (= \e c) (E) (= \f c) (F)
-      (= \g c) (G) (= \h c) (H) (= \i c) (I)
-      (= \j c) (J) (= \k c) (K) (= \l c) (L)
-      (= \m c) (M) (= \n c) (N) (= \o c) (O)
-      (= \p c) (P) (= \q c) (Q) (= \r c) (R)
-      (= \s c) (S) (= \t c) (T) (= \u c) (U)
-      (= \v c) (V) (= \w c) (W) (= \x c) (X)
-      (= \y c) (Y) (= \z c) (Z)
-      (Invalid)))
-
-  (sig lower (Fn [Character] String))
-  (doc lower "Returns the lowercase value of a given Character as a string.")
-  (defn lower [c] 
-    (match (the Character c)
-      (A) @"a" (B) @"b" (C) @"c"
-      (D) @"d" (E) @"e" (F) @"f"
-      (G) @"g" (H) @"h" (I) @"i"
-      (J) @"j" (K) @"k" (L) @"l"
-      (M) @"m" (N) @"n" (O) @"o"
-      (P) @"p" (Q) @"q" (R) @"r"
-      (S) @"s" (T) @"t" (U) @"u" 
-      (V) @"v" (W) @"w" (X) @"x" 
-      (Y) @"y" (Z) @"z"
-      _ @""))
-
-  (sig upper (Fn [Character] String))
-  (doc upper "Returns the uppercase value of a given Character as a string.")
-  (defn upper [c] 
-    (match (the Character c)
-      (A) @"A" (B) @"B" (C) @"C"
-      (D) @"D" (E) @"E" (F) @"F"
-      (G) @"G" (H) @"H" (I) @"I"
-      (J) @"J" (K) @"K" (L) @"L"
-      (M) @"M" (N) @"N" (O) @"O"
-      (P) @"P" (Q) @"Q" (R) @"R"
-      (S) @"S" (T) @"T" (U) @"U" 
-      (V) @"V" (W) @"W" (X) @"X" 
-      (Y) @"Y" (Z) @"Z"
-      _ @""))
-
-  (sig to-char (Fn [Character] Char))
-  (doc to-char 
-    "Returns the Char representation of a given Character.  If there's no
-    matching representation, returns (Char.from-int 0)")
   (defn to-char [c]
-    (match (the Character c)
-      (A) \A (B) \B (C) \C
-      (D) \D (E) \E (F) \F
-      (G) \G (H) \H (I) \I
-      (J) \J (K) \K (L) \L
-      (M) \M (N) \N (O) \O
-      (P) \P (Q) \Q (R) \R
-      (S) \S (T) \T (U) \U 
-      (V) \V (W) \W (X) \X 
-      (Y) \Y (Z) \Z
-      _ (Char.from-int 0)))
+    (match c
+      (Ch.Character x) (char (x))
+      (Ch.Invalid) (Char.from-int 0)))
+
+  (sig from-char (Fn [Char (Ref (Fn [Char] (Maybe a)))] (Ch a)))
+  (defn from-char [ch character-fn] 
+    (match (~character-fn ch)
+      (Just x) (Ch.Character x)
+      (Nothing) (Ch.Invalid)))
+
+  (defn valid? [c]
+    (match c
+      (Ch.Invalid) false
+      _ true))
+
+  (sig transliterate (Fn [Char (Ref (Fn [Char] (Maybe a))) (Ref (Fn [Char] (Maybe
+  b)))] (Ch c)))
+  (defn transliterate [ch from-fn to-fn]
+    (from-char (to-char (from-char ch from-fn)) to-fn))
+
+  (defn translate [ch from-fn to-fn]
+    (to-char (transliterate ch from-fn to-fn)))
 
   (defn /= [c other-c] 
     (/= (to-char c) (to-char other-c)))
   
   (defn str [c]
     (str (to-char c)))
+  
+  (defmodule Roman
+    
+    (defmodule Upper
+     
+      (deftype RomanUpper
+        A B C
+        D E F
+        G H I
+        J K L
+        M N O
+        P Q R
+        S T U
+        V W X
+        Y Z)
+
+      (defn char [roman] 
+        (match roman
+          (RomanUpper.A) \A (RomanUpper.B) \B (RomanUpper.C) \C
+          (RomanUpper.D) \D (RomanUpper.E) \E (RomanUpper.F) \F
+          (RomanUpper.G) \G (RomanUpper.H) \H (RomanUpper.I) \I
+          (RomanUpper.J) \J (RomanUpper.K) \K (RomanUpper.L) \L
+          (RomanUpper.M) \M (RomanUpper.N) \N (RomanUpper.O) \O
+          (RomanUpper.P) \P (RomanUpper.Q) \Q (RomanUpper.R) \R
+          (RomanUpper.S) \S (RomanUpper.T) \T (RomanUpper.U) \U
+          (RomanUpper.V) \V (RomanUpper.W) \W (RomanUpper.X) \X
+          (RomanUpper.Y) \Y (RomanUpper.Z) \Z))
+
+      (defn character [c]
+        (cond
+          (or (= \a c) (= \A c)) (Just RomanUpper.A) 
+          (or (= \b c) (= \B c)) (Just RomanUpper.B) 
+          (or (= \c c) (= \C c)) (Just RomanUpper.C)
+          (or (= \d c) (= \D c)) (Just RomanUpper.D) 
+          (or (= \e c) (= \E c)) (Just RomanUpper.E) 
+          (or (= \f c) (= \F c)) (Just RomanUpper.F)
+          (or (= \g c) (= \G c)) (Just RomanUpper.G) 
+          (or (= \h c) (= \H c)) (Just RomanUpper.H) 
+          (or (= \i c) (= \I c)) (Just RomanUpper.I)
+          (or (= \j c) (= \J c)) (Just RomanUpper.J) 
+          (or (= \k c) (= \K c)) (Just RomanUpper.K) 
+          (or (= \l c) (= \L c)) (Just RomanUpper.L)
+          (or (= \m c) (= \M c)) (Just RomanUpper.M) 
+          (or (= \n c) (= \N c)) (Just RomanUpper.N) 
+          (or (= \o c) (= \O c)) (Just RomanUpper.O)
+          (or (= \p c) (= \P c)) (Just RomanUpper.P) 
+          (or (= \q c) (= \Q c)) (Just RomanUpper.Q) 
+          (or (= \r c) (= \R c)) (Just RomanUpper.R)
+          (or (= \s c) (= \S c)) (Just RomanUpper.S) 
+          (or (= \t c) (= \T c)) (Just RomanUpper.T) 
+          (or (= \u c) (= \U c)) (Just RomanUpper.U)
+          (or (= \v c) (= \V c)) (Just RomanUpper.V) 
+          (or (= \w c) (= \W c)) (Just RomanUpper.W) 
+          (or (= \x c) (= \X c)) (Just RomanUpper.X)
+          (or (= \y c) (= \Y c)) (Just RomanUpper.Y) 
+          (or (= \z c) (= \Z c)) (Just RomanUpper.Z)
+          (Nothing)))
+    )
+
+    (defmodule Lower
+     
+      (deftype RomanLower
+        A B C
+        D E F
+        G H I
+        J K L
+        M N O
+        P Q R
+        S T U
+        V W X
+        Y Z)
+
+      (defn char [roman] 
+        (match roman
+          (RomanLower.A) \a (RomanLower.B) \b (RomanLower.C) \c
+          (RomanLower.D) \d (RomanLower.E) \e (RomanLower.F) \f
+          (RomanLower.G) \g (RomanLower.H) \h (RomanLower.I) \i
+          (RomanLower.J) \j (RomanLower.K) \k (RomanLower.L) \l
+          (RomanLower.M) \m (RomanLower.N) \n (RomanLower.O) \o
+          (RomanLower.P) \p (RomanLower.Q) \q (RomanLower.R) \r
+          (RomanLower.S) \s (RomanLower.T) \t (RomanLower.U) \u 
+          (RomanLower.V) \v (RomanLower.W) \w (RomanLower.X) \x 
+          (RomanLower.Y) \y (RomanLower.Z) \z)) 
+
+      (defn character [c]
+        (cond
+          (or (= \a c) (= \A c)) (Just RomanLower.A) 
+          (or (= \b c) (= \B c)) (Just RomanLower.B) 
+          (or (= \c c) (= \C c)) (Just RomanLower.C)
+          (or (= \d c) (= \D c)) (Just RomanLower.D) 
+          (or (= \e c) (= \E c)) (Just RomanLower.E) 
+          (or (= \f c) (= \F c)) (Just RomanLower.F)
+          (or (= \g c) (= \G c)) (Just RomanLower.G) 
+          (or (= \h c) (= \H c)) (Just RomanLower.H) 
+          (or (= \i c) (= \I c)) (Just RomanLower.I)
+          (or (= \j c) (= \J c)) (Just RomanLower.J) 
+          (or (= \k c) (= \K c)) (Just RomanLower.K) 
+          (or (= \l c) (= \L c)) (Just RomanLower.L)
+          (or (= \m c) (= \M c)) (Just RomanLower.M) 
+          (or (= \n c) (= \N c)) (Just RomanLower.N) 
+          (or (= \o c) (= \O c)) (Just RomanLower.O)
+          (or (= \p c) (= \P c)) (Just RomanLower.P) 
+          (or (= \q c) (= \Q c)) (Just RomanLower.Q) 
+          (or (= \r c) (= \R c)) (Just RomanLower.R)
+          (or (= \s c) (= \S c)) (Just RomanLower.S) 
+          (or (= \t c) (= \T c)) (Just RomanLower.T) 
+          (or (= \u c) (= \U c)) (Just RomanLower.U)
+          (or (= \v c) (= \V c)) (Just RomanLower.V) 
+          (or (= \w c) (= \W c)) (Just RomanLower.W) 
+          (or (= \x c) (= \X c)) (Just RomanLower.X)
+          (or (= \y c) (= \Y c)) (Just RomanLower.Y) 
+          (or (= \z c) (= \Z c)) (Just RomanLower.Z)
+          (Nothing)))
+    )
+    
+    (defn lower [ch] (translate ch &Upper.character &Lower.character))
+    (defn upper [ch] (translate ch &Lower.character &Upper.character))
+  )
 )
