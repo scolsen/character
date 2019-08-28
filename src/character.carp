@@ -1,0 +1,44 @@
+(use Maybe)
+
+;; Our functions, e.g. `to-char` return a `(Ref Char)`. Carp doesn't have a
+;; `str` function to handle this in its core library, so we add one here.
+(defn str [ch] (str @ch))
+
+(deftype (Ch a)
+    (Character [a])
+    (Invalid []))
+
+(defmodule Character
+  (definterface char (Fn [a] Char))
+  (definterface character (Fn [Char] (Maybe a)))
+
+  (defn to-char [c]
+    (match c
+      (Ch.Character x) (char (x))
+      (Ch.Invalid) (Char.from-int 0)))
+
+  (sig from-char (Fn [Char (Ref (Fn [Char] (Maybe a)))] (Ch a)))
+  (defn from-char [ch character-fn] 
+    (match (~character-fn ch)
+      (Just x) (Ch.Character x)
+      (Nothing) (Ch.Invalid)))
+
+  (defn valid? [c]
+    (match c
+      (Ch.Invalid) false
+      _ true))
+
+  (sig transliterate (Fn [Char (Ref (Fn [Char] (Maybe a))) (Ref (Fn [Char] (Maybe
+  b)))] (Ch c)))
+  (defn transliterate [ch from-fn to-fn]
+    (from-char (to-char (from-char ch from-fn)) to-fn))
+
+  (defn translate [ch from-fn to-fn]
+    (to-char (transliterate ch from-fn to-fn)))
+
+  (defn /= [c other-c] 
+    (/= (to-char c) (to-char other-c)))
+  
+  (defn str [c]
+    (str (to-char c)))
+)
